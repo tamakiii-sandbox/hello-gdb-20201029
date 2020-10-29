@@ -5,13 +5,20 @@ help:
 	@cat $(firstword $(MAKEFILE_LIST))
 
 setup: \
-	dependencies
+	dependencies \
+	check \
+	info
 
 dependencies:
 	@type gcc > /dev/null
 	@type gdb > /dev/null
 	@type csrutil > /dev/null
 	@type codesign > /dev/null
+
+check: ~/.gdbinit
+	grep -q 'set startup-with-shell off' $< || \
+		{ echo "add 'set startup-with-shell off' to $<"; exit $$?; }
+	@echo "$< is OK"
 
 build: \
 	a.out
